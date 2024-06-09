@@ -1,12 +1,26 @@
 const express = require('express');
+const { check } = require('express-validator');
+
+const usersController = require('../controllers/users-controllers');
 
 const router = express.Router();
-const DUMMY_USERS = [{
-    id: 'u1',
-    name: 'Max Schwarz',
-    image: 'https://images.unsplash.com/photo-1612838320302-4b3b3b3b3b3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMjIwNzV8MHwxfGFsbHwxf'
-}]
 
+router.get('/', usersController.getUsers);
 
+router.post(
+  '/signup',
+  [
+    check('name')
+      .not()
+      .isEmpty(),
+    check('email')
+      .normalizeEmail() // Test@test.com => test@test.com
+      .isEmail(),
+    check('password').isLength({ min: 6 })
+  ],
+  usersController.signup
+);
+
+router.post('/login', usersController.login);
 
 module.exports = router;
