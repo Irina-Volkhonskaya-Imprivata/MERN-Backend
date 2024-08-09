@@ -3,12 +3,15 @@ const { check } = require("express-validator");
 
 const placesControllers = require("../controllers/places-controllers");
 const fileUpload = require("../middleware/file-upload");
+const checkAuth = require("../middleware/check-auth")
 
 const router = express.Router();
 
 router.get("/:pid", placesControllers.getPlaceById);
 
 router.get("/user/:uid", placesControllers.getPlacesByUserId);
+
+router.use(checkAuth); //все роуты ниже (расположеные после этой строки) будут защищены токеном авторизации. неавторизованный пользователь не сможет получить доступ к ним
 
 router.post(
   "/",
