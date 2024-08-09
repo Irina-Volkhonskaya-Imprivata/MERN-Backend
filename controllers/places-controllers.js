@@ -4,7 +4,7 @@ const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 
 const HttpError = require("../models/http-error");
-const getCoordsForAddress = require("../util/location");
+// const getCoordsForAddress = require("../util/location");
 const Place = require("../models/place");
 const User = require("../models/user");
 
@@ -70,11 +70,11 @@ const createPlace = async (req, res, next) => {
     );
   }
 
-  const { title, description, address, creator } = req.body;
+  const { title, description, address } = req.body;
 
   let coordinates;
   try {
-    coordinates = await getCoordsForAddress(address);
+    // coordinates = await getCoordsForAddress(address);
   } catch (error) {
     return next(error);
   }
@@ -85,7 +85,7 @@ const createPlace = async (req, res, next) => {
     address,
     location: coordinates,
     image: req.file.path,
-    creator,
+    creator: req.userData.userId,
   });
 
   let user;
@@ -209,7 +209,7 @@ const deletePlace = async (req, res, next) => {
   }
 
   fs.unlink(imagePath, (err) => {
-    console.log(err);
+    console.log("err", err.message);
   });
 
   res.status(200).json({ message: "Deleted place." });
