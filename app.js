@@ -1,5 +1,9 @@
+const fs = require("fs");
+const path = require("path");
+
 const express = require("express");
 const mongoose = require("mongoose");
+// const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const placesRoutes = require("./routes/places-routes");
@@ -9,6 +13,7 @@ const HttpError = require("./models/http-error");
 const app = express();
 
 app.use(bodyParser.json());
+app.use("/uploades/images", express.static(path.join("uploades", "images")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -20,7 +25,7 @@ app.use((req, res, next) => {
 
   next();
 });
-
+// app.use(cors());
 app.use("/api/places", placesRoutes); // => /api/places...
 app.use("/api/users", usersRoutes);
 
@@ -30,6 +35,11 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, (err) => {
+      console.log(err);
+    });
+  }
   if (res.headerSent) {
     return next(error);
   }
@@ -42,8 +52,9 @@ mongoose
     "mongodb+srv://dg789hngm457kjklZUnbmg8:dg789hngm457kjklZUnbmg8@cluster0.81fxn4w.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => {
+    console.log("Connected to MongoDB");
     app.listen(5000);
   })
   .catch((error) => {
-    console.log(error);
+    console.error("Connection to MongoDB failed:", error);
   });
