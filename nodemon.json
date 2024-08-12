@@ -1,0 +1,8 @@
+{
+    "env":{
+        "DB_USER": "dg789hngm457kjklZUnbmg8"    ,
+        "DB_PASS": "dg789hngm457kjklZUnbmg8"    ,
+        "DB_NAME": "mern" ,
+        "JWT_SECRET": "supersecret_dont_share"
+    }
+}
